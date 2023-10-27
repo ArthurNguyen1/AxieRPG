@@ -142,5 +142,15 @@ namespace Assets.Characters
                 }
             }
         }
+
+        public float GetHealth()
+        {
+            throw new NotImplementedException();
+        }
+
+        public int GetExp()
+        {
+            throw new NotImplementedException();
+        }
     }
 }

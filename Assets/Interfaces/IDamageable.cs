@@ -15,6 +15,8 @@ namespace Assets.Interfaces
         public bool Targetable { get; set; }
         public bool Invincible { get; set; }
         public void OnObjectDestroyed();
+        public float GetHealth();
+        public int GetExp();
 
     }
 }

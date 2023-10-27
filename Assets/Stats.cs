@@ -8,16 +8,27 @@ public class Stats : MonoBehaviour
     public float health;
     public float damage;
     public int level;
-    public int maxExp;
+    //public float maxExp;
 
     //Health Slider Variables
     public float damageLerpDuration;
-    private float currentHealth;
+    public float currentHealth;
     private float targetHealth;
-    private int currentExp;
+    public float currentExp;
     private Coroutine damageCoroutine;
 
     HealthUI healthUI;
+
+    public float CurrentHealth
+    {
+        get { return currentHealth; }
+        set { currentHealth = value; }
+    }
+    public float CurrentExp
+    {
+        get { return currentExp; }
+        set { currentExp = value;  }
+    }
 
     private void Awake()
     {

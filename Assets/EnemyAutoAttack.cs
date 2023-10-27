@@ -22,6 +22,7 @@ public class EnemyAutoAttack : MonoBehaviour
     public void AttackRight()
     {
         //print("[Slime] Attack Right");
+        
         skillCollider.enabled = true;
         transform.localPosition = rightAttackOffset;
     }
@@ -29,6 +30,7 @@ public class EnemyAutoAttack : MonoBehaviour
     public void AttackLeft()
     {
         //print("[Slime] Attack Left");
+        
         skillCollider.enabled = true;
         transform.localPosition = new Vector3(rightAttackOffset.x * -1, rightAttackOffset.y);
     }
@@ -63,18 +65,4 @@ public class EnemyAutoAttack : MonoBehaviour
     //        Debug.LogWarning("[EnemyAutoAttack] No damageableObject");
     //    }
     //}
-
-    private void OnTriggerStay2D(Collider2D collision)
-    {
-        IDamageable damageableObject = collision.GetComponent<IDamageable>();
-        if (damageableObject != null)
-        {
-            Debug.Log("Get into here");
-            damageableObject.OnHit(AttackDamage);
-        }
-        else
-        {
-            Debug.LogWarning("[EnemyAutoAttack] No damageableObject");
-        }
-    }
 }

@@ -179,6 +179,8 @@ public class Abilities : MonoBehaviour
     {
         if(Input.GetKeyDown(ability1Key) && !isAbility1Cooldown)
         {
+            //ability1HitBox.enabled = true;
+
             isAbility1Cooldown = true;
             currentAbility1Cooldown = ability1Cooldown;
 
@@ -198,6 +200,8 @@ public class Abilities : MonoBehaviour
     {
         if (Input.GetKeyDown(ability2Key) && !isAbility2Cooldown)
         {
+            //ability2HitBox.enabled = true;
+
             isAbility2Cooldown = true;
             currentAbility2Cooldown = ability2Cooldown;
 
@@ -217,6 +221,8 @@ public class Abilities : MonoBehaviour
     {
         if (Input.GetKeyDown(ability3Key) && !isAbility3Cooldown)
         {
+            //ability3HitBox.enabled = true;
+
             isAbility3Cooldown = true;
             currentAbility3Cooldown = ability3Cooldown;
 

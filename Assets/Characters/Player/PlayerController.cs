@@ -17,7 +17,7 @@ public class PlayerController : MonoBehaviour, IDamageable
     private float hitTimeElapsed = 0f;
 
     Collider2D physicsCollider;
-    private Stats stats;
+    public Stats stats;
 
     public float moveSpeed = 5.0f;
 
@@ -60,7 +60,7 @@ public class PlayerController : MonoBehaviour, IDamageable
         {
             if (value < _health)
             {
-
+                IsHit = true;
             }
 
             _health = value;
@@ -69,6 +69,8 @@ public class PlayerController : MonoBehaviour, IDamageable
             {
                 Targetable = false;
             }
+
+            stats.CurrentHealth = _health; 
         }
         get
         {
@@ -121,18 +123,29 @@ public class PlayerController : MonoBehaviour, IDamageable
         Health = stats.health;
     }
 
-    //private void Update()
-    //{
-    //    // Control the animation playback
-    //    if (Input.GetKeyDown(KeyCode.Space))
-    //    {
-    //        // Play an animation by its name
-    //        if (skeletonAnimation.AnimationName != null)
-    //            skeletonAnimation.AnimationState.SetAnimation(0, "activity/bath", true);
-    //        else
-    //            print("No animation name match");
-    //    }
-    //}
+    private void Update()
+    {
+        //// Control the animation playback
+        //if (Input.GetKeyDown(KeyCode.Space))
+        //{
+        //    // Play an animation by its name
+        //    if (skeletonAnimation.AnimationName != null)
+        //        skeletonAnimation.AnimationState.SetAnimation(0, "activity/bath", true);
+        //    else
+        //        print("No animation name match");
+        //}
+
+        GameObject[] enemys = GameObject.FindGameObjectsWithTag("Enemy");
+        foreach (GameObject enemy in enemys)
+        {
+            IDamageable comp = enemy.GetComponent<IDamageable>();
+            if (comp != null && comp.GetHealth() <= 0)
+            {
+                stats.CurrentExp += comp.GetExp() * Time.deltaTime;
+                stats.damage += 1 * Time.deltaTime;
+            }
+        }
+    }
 
     private void Flip(bool flip)
     {
@@ -283,5 +296,15 @@ public class PlayerController : MonoBehaviour, IDamageable
     public void OnObjectDestroyed()
     {
         Destroy(gameObject);
+    }
+
+    public float GetHealth()
+    {
+        return Health;
+    }
+
+    public int GetExp()
+    {
+        throw new System.NotImplementedException();
     }
 }

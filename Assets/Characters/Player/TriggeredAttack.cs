@@ -61,8 +61,6 @@ public class TriggeredAttack : MonoBehaviour
 
             //collision.SendMessage("OnHit", damage, knockback);
             damageableObject.OnHit(AttackDamage, knockback);
-
-            //damageableObject.OnHit(damage);
         }
         else
         {

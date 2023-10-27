@@ -18,6 +18,12 @@ public class Slime : MonoBehaviour, IDamageable
     public float deadTime = 1f;
     private float deadTimeElapsed = 0f;
 
+    public float atkRange = 0.5f;
+    public float damage = 1.0f;
+    bool isDamageable = false;
+
+    public int expValue = 10;
+
     Collider2D physicsCollider;
     private Stats stats;
 
@@ -46,8 +52,11 @@ public class Slime : MonoBehaviour, IDamageable
         {
             if (_isAttack == false && value == true)
             {
-                skeletonAnimation.AnimationState.SetAnimation(0, "attack/melee/bounce", true);
-                attackHitBox.enabled = true;
+                TrackEntry trackEntry = animationState.SetAnimation(0, "attack/melee/goo-split", true);
+                trackEntry.Start += OnSpineAnimationStart;
+                trackEntry.Complete += OnSpineAnimationComplete;
+                //skeletonAnimation.AnimationState.SetAnimation(0, "attack/melee/goo-split", true);
+                //attackHitBox.enabled = true;
             }
             if (_isAttack == true && value == false)
             {
@@ -154,27 +163,33 @@ public class Slime : MonoBehaviour, IDamageable
         rb = GetComponent<Rigidbody2D>();
 
         skeletonAnimation = GetComponent<SkeletonAnimation>();
-        //animationState = skeletonAnimation.AnimationState;
+        animationState = skeletonAnimation.AnimationState;
 
-        //TrackEntry trackEntry = animationState.SetAnimation(0, "attack/melee/bounce", true);
-        //trackEntry.Complete += OnSpineAnimationComplete;
         //skeletonAnimation.AnimationState.Event += HandleAnimationEvent;
         skeletonAnimation.AnimationState.SetAnimation(0, "action/move-forward", true);
 
         physicsCollider = GetComponent<Collider2D>();
         stats = GetComponent<Stats>();
         Health = stats.health;
+        damage = stats.damage;
+        isDamageable = false;
 
         //attackCollider = attackHitBox.GetComponent<Collider2D>();
         attackHitBox.enabled = false;
         attackHitBox.AttackDamage = stats.damage;
     }
 
-    //public void OnSpineAnimationComplete(Spine.TrackEntry trackEntry)
-    //{
-    //    Debug.Log("[Slime] add animation event");
-    //    Destroy(gameObject);
-    //}
+    public void OnSpineAnimationComplete(TrackEntry trackEntry)
+    {
+        Debug.Log("[Slime] complete");
+        isDamageable = true;
+    }
+
+    public void OnSpineAnimationStart(TrackEntry trackEntry)
+    {
+        Debug.Log("[Slime] start");
+        isDamageable = false;
+    }
 
     //private void HandleAnimationEvent(TrackEntry trackEntry, Spine.Event e)
     //{
@@ -188,7 +203,7 @@ public class Slime : MonoBehaviour, IDamageable
     //    if (animationName == "attack/melee/bounce" && e.Data.Name == "EndLoopEventName")
     //    {
     //        Debug.Log("[Slime] add animation event");
-    //        Destroy(gameObject);
+    //        //Destroy(gameObject);
     //    }
     //}
 
@@ -221,6 +236,26 @@ public class Slime : MonoBehaviour, IDamageable
             IsAttack = false;
             canMove = true;
         }
+
+        GameObject[] players = GameObject.FindGameObjectsWithTag("Player");
+        foreach (GameObject player in players)
+        {
+            float distance = Vector3.Distance(player.transform.position, transform.position);
+            //Debug.Log(distance);
+            if (distance < atkRange && isDamageable)
+            {
+                IDamageable comp = player.GetComponent<IDamageable>();
+                if (comp != null && !comp.Invincible)
+                {
+                    comp.OnHit(damage);
+                }
+            }
+        }
+    }
+
+    private void LateUpdate()
+    {
+        isDamageable = false;
     }
 
     private void FixedUpdate()
@@ -339,5 +374,15 @@ public class Slime : MonoBehaviour, IDamageable
     public void OnObjectDestroyed()
     {
         Destroy(gameObject);
+    }
+
+    public float GetHealth()
+    {
+        return Health;
+    }
+
+    public int GetExp()
+    {
+        return expValue;
     }
 }
