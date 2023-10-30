@@ -4,6 +4,7 @@ using UnityEngine;
 using UnityEngine.InputSystem;
 using Assets.Interfaces;
 using Spine.Unity;
+using UnityEngine.SceneManagement;
 
 // Takes and handles input and movement for a player character
 public class PlayerController : MonoBehaviour, IDamageable
@@ -15,6 +16,9 @@ public class PlayerController : MonoBehaviour, IDamageable
 
     public float hitTime = 1f;
     private float hitTimeElapsed = 0f;
+
+    public float levelUpTime = 1f;
+    private float levelUpTimeElapsed = 0f;
 
     Collider2D physicsCollider;
     public Stats stats;
@@ -68,13 +72,34 @@ public class PlayerController : MonoBehaviour, IDamageable
             if (_health <= 0)
             {
                 Targetable = false;
+                SceneManager.LoadScene(SceneManager.GetActiveScene().name);
             }
 
-            stats.CurrentHealth = _health; 
+            stats.TargetHealth = _health; 
+            stats.CurrentHealth = _health;
         }
         get
         {
             return _health;
+        }
+    }
+    private bool _isLevelUp = false;
+    public bool IsLevelUp
+    {
+        get { return _isLevelUp; }
+        set
+        {
+            if (_isLevelUp == false && value == true)
+            {
+                //RunAnimationHit();
+                skeletonAnimation.AnimationState.SetAnimation(0, "activity/evolve", false);
+                levelUpTimeElapsed = 0f;
+            }
+            if (_isLevelUp == true && value == false)
+            {
+                skeletonAnimation.AnimationState.SetAnimation(0, "activity/appear", true);
+            }
+            _isLevelUp = value;
         }
     }
 
@@ -143,7 +168,15 @@ public class PlayerController : MonoBehaviour, IDamageable
             {
                 stats.CurrentExp += comp.GetExp() * Time.deltaTime;
                 stats.damage += 1 * Time.deltaTime;
+                stats.CurrentHealth += 10 * Time.deltaTime;
+                stats.TargetHealth += 10 * Time.deltaTime;
             }
+        }
+
+        if(stats.CurrentExp >= 100)
+        {
+            stats.CurrentExp = stats.CurrentExp % 100;
+            IsLevelUp = true;
         }
     }
 
@@ -213,6 +246,18 @@ public class PlayerController : MonoBehaviour, IDamageable
             if (hitTimeElapsed > hitTime)
             {
                 IsHit = false;
+            }
+        }
+
+        if (IsLevelUp)
+        {
+            levelUpTimeElapsed += Time.deltaTime;
+
+            if (levelUpTimeElapsed > levelUpTime)
+            {
+                IsLevelUp = false;
+                stats.level += 1;
+                stats.health += 20;
             }
         }
     }

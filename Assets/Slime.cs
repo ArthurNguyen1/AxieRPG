@@ -27,6 +27,8 @@ public class Slime : MonoBehaviour, IDamageable
     Collider2D physicsCollider;
     private Stats stats;
 
+    [SerializeField] FloatingHealthBar healthBar;
+
     //public float damage = 1;
 
     public DetectionZone detectionZone;
@@ -113,7 +115,6 @@ public class Slime : MonoBehaviour, IDamageable
 
             _health = value;
 
-
             if (_health <= 0)
             {
                 IsDead = true;
@@ -173,6 +174,9 @@ public class Slime : MonoBehaviour, IDamageable
         Health = stats.health;
         damage = stats.damage;
         isDamageable = false;
+
+        healthBar = GetComponentInChildren<FloatingHealthBar>();
+        healthBar.UpdateHealthBar(Health, stats.health);
 
         //attackCollider = attackHitBox.GetComponent<Collider2D>();
         attackHitBox.enabled = false;
@@ -251,6 +255,7 @@ public class Slime : MonoBehaviour, IDamageable
                 }
             }
         }
+        healthBar.UpdateHealthBar(_health, stats.health);
     }
 
     private void LateUpdate()

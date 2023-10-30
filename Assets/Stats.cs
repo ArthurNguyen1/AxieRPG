@@ -13,7 +13,7 @@ public class Stats : MonoBehaviour
     //Health Slider Variables
     public float damageLerpDuration;
     public float currentHealth;
-    private float targetHealth;
+    public float targetHealth;
     public float currentExp;
     private Coroutine damageCoroutine;
 
@@ -29,6 +29,11 @@ public class Stats : MonoBehaviour
         get { return currentExp; }
         set { currentExp = value;  }
     }
+    public float TargetHealth
+    {
+        get { return targetHealth; }
+        set { targetHealth = value; }
+    }
 
     private void Awake()
     {
@@ -43,10 +48,11 @@ public class Stats : MonoBehaviour
 
     private void Update()
     {
-        if(Input.GetKeyDown(KeyCode.V))
-        {
-            TakeDamage(gameObject, damage);
-        }
+        //if(Input.GetKeyDown(KeyCode.V))
+        //{
+        //    TakeDamage(gameObject, damage);
+        //}
+        healthUI.Update2DSlider(health, currentHealth);
     }
 
     public void TakeDamage(GameObject target, float damageAmount)
